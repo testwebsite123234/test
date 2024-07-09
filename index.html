@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Client</title>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <label for="prefixInput">Prefix Message:</label>
+    <input type="text" id="prefixInput" placeholder="Enter prefix message">
+    <br><br>
+    <label for="messageInput">Message:</label>
+    <input type="text" id="messageInput" placeholder="Enter your message">
+    <br><br>
+    <button onclick="sendMessage()">Send Message</button>
+    <div id="response"></div>
+
+    <script>
+        let websocket;
+
+        function connectWebSocket() {
+            websocket = new WebSocket("ws://223.130.132.113:9998/");
+
+            websocket.onopen = function(event) {
+                console.log("Connected to WebSocket server.");
+            };
+
+            websocket.onmessage = function(event) {
+                document.getElementById("response").innerText = "Response from server: " + event.data;
+            };
+
+            websocket.onclose = function(event) {
+                console.log("Disconnected from WebSocket server.");
+            };
+
+            websocket.onerror = function(error) {
+                console.log("WebSocket error: " + error);
+            };
+        }
+
+        function sendMessage() {
+            const prefixInput = document.getElementById("prefixInput").value;
+            const messageInput = document.getElementById("messageInput").value;
+            const fullMessage = prefixInput + messageInput;
+            websocket.send(fullMessage);
+        }
+
+        // Connect to the WebSocket server when the page loads
+        window.onload = connectWebSocket;
+    </script>
+</body>
+</html>
